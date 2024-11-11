@@ -70,11 +70,6 @@ const sessionOptions = {
 };
 
 
-// // Routes
-// app.get("/", (req, res) => {
-//     res.send("Hi, I am Root");
-// });
-
 
 
 app.use(session(sessionOptions));
@@ -96,6 +91,10 @@ app.use((req, res, next) => {
     next();
 });
 
+// // Routes
+app.get("/", (req, res) => {
+    res.send("/listings");
+});
 
 app.use("/listings", listingRouter);  // `/listings` prefix applies to all listing routes
 app.use("/listings/:id/reviews", reviewRouter);  // `/listings/:id/reviews` applies to all review routes
