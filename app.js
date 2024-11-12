@@ -91,10 +91,10 @@ app.use((req, res, next) => {
     next();
 });
 
-// // Routes
-app.get("/listings", (req, res) => {
-    res.render("/listings");
-});
+// // // Routes
+// app.get("/listings", (req, res) => {
+//     res.render("/listings");
+// });
 
 app.use("/listings", listingRouter);  // `/listings` prefix applies to all listing routes
 app.use("/listings/:id/reviews", reviewRouter);  // `/listings/:id/reviews` applies to all review routes
