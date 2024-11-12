@@ -93,7 +93,7 @@ app.use((req, res, next) => {
 
 // // Routes
 app.get("/", (req, res) => {
-    res.send("/listings");
+    res.render("/listings");
 });
 
 app.use("/listings", listingRouter);  // `/listings` prefix applies to all listing routes
