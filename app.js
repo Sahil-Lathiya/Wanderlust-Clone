@@ -92,8 +92,8 @@ app.use((req, res, next) => {
 });
 
 // // Routes
-app.get("/", (req, res) => {
-    res.render("/listings");
+app.get("/listings", (req, res) => {
+    res.render("gitlistings");
 });
 
 app.use("/listings", listingRouter);  // `/listings` prefix applies to all listing routes
