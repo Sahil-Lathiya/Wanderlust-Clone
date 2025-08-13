@@ -25,13 +25,8 @@
     "express-session": "^1.18.1",
     "joi": "^17.13.3",
     "method-override": "^3.0.0",
-<<<<<<< HEAD
-    "mongoose": "^8.8.3",
     "multer": "^2.0.2",
-=======
     "mongoose": "^8.9.5",
-    "multer": "^1.4.5-lts.1",
->>>>>>> 565a104a12c31424a0e9173679627c4e2323069a
     "multer-storage-cloudinary": "^4.0.0",
     "on-headers": "^1.1.0",
     "passport": "^0.7.0",
