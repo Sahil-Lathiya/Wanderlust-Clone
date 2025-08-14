@@ -98,8 +98,8 @@ app.get("/", (req, res) => {
 
 
 // Routes
-app.use("/listings", listingRouter);  // `/listings` prefix applies to all listing routes
-app.use("/listings/:id/reviews", reviewRouter);  // `/listings/:id/reviews` applies to all review routes
+app.use("/listings", listingRouter);  // /listings prefix applies to all listing routes
+app.use("/listings/:id/reviews", reviewRouter);  // /listings/:id/reviews applies to all review routes
 app.use("/", userRouter);
 
 

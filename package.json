@@ -1,10 +1,11 @@
 {
   "engines": {
-    "node": ">=20.17.0"
+    "node": ">=20.x",
+    "npm": ">=10.x"
   },
   "name": "majorproject",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
@@ -23,10 +24,11 @@
     "ejs-mate": "^4.0.0",
     "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "helmet": "^8.1.0",
     "joi": "^17.13.3",
     "method-override": "^3.0.0",
-    "multer": "^2.0.2",
     "mongoose": "^8.9.5",
+    "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
     "on-headers": "^1.1.0",
     "passport": "^0.7.0",
