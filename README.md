@@ -1,75 +1,84 @@
-# Wanderlust Airbnb Clone
+# Wanderlust Clone
 
 ## Project Overview
-Wanderlust is a web application that mimics the functionality of Airbnb, providing a platform for users to book lodging and offer their properties for rent. This project aims to deliver a seamless user experience, leveraging modern web technologies.
-
-## Features
-- User registration and authentication
-- Property listing and bookings
-- User profiles and transaction history
-- Advanced search filters for lodging
-- Secure payment processing
-- Reviews and ratings system
+Wanderlust Clone is a web application designed for users to explore and create travel listings, read and write reviews, and manage user authentication through a seamless interface.
 
 ## Tech Stack
-- **Frontend:** React.js, Redux, CSS
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Authentication:** JWT (JSON Web Tokens)
-- **Deployment:** Heroku / AWS
+- **Node.js**: The application server is built using Node.js, providing a scalable network application.
+- **Express**: We utilize Express.js to simplify routing and middleware management.
+- **MongoDB**: The data is stored in a MongoDB database to ensure a flexible schema design, allowing for easy data manipulation.
+- **EJS**: Embedded JavaScript templating is used for rendering dynamic web pages.
+- **Passport.js**: For user authentication, Passport.js offers a simple and reliable way to manage user sessions.
 
-## Installation
-### Prerequisites
-- Node.js (v12 or above)
-- MongoDB
+## Features
+- **Listings**: Users can view and create travel listings.
+- **Reviews**: Users are able to write reviews on listings they've visited.
+- **User Authentication**: Registration and login functionality to ensure a personalized experience for users.
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Sahil-Lathiya/Wanderlust-Clone.git
-   cd Wanderlust-Clone
-   ```
-2. Install the dependencies:
-   ```bash
-   npm install
-   ```
-3. Configure environment variables:
-   Create a `.env` file in the root directory and add the necessary configurations.
-4. Start the application:
-   ```bash
-   npm start
-   ```
-
-## Usage
-- Access the application at `http://localhost:3000` after starting the server.
-- Follow the on-screen instructions to register or log in.
+## Deployment
+The application is deployed on **Render**, enabling high availability and ease of access for users.
 
 ## Project Structure
 ```
-/Wanderlust-Clone
-|-- /client          # Frontend code
-|-- /server          # Backend code
-|-- /models          # Database models
-|-- /routes          # API routes
-|-- /config          # Configuration files
-|-- README.md        # Documentation
+Wanderlust-Clone/
+├── models/
+│   ├── User.js
+│   ├── Listing.js
+│   ├── Review.js
+├── routes/
+│   ├── api/
+│   │   ├── listings.js
+│   │   ├── reviews.js
+│   │   ├── users.js
+│   ├── index.js
+├── views/
+│   ├── listings/  
+│   ├── reviews/
+│   ├── users/
+└── app.js
 ```
 
 ## Database Models
-- **User:** Represents the user with fields for name, email, password, and profile information.
-- **Property:** Contains details about the listings such as title, description, price, location, and images.
-- **Booking:** Records user bookings with references to the user and property.
-- **Review:** Captures user reviews associated with properties.
+### User
+- **username**: String
+- **password**: String
+- **email**: String
+
+### Listing
+- **title**: String
+- **description**: String
+- **location**: String
+- **userId**: Ref to User model
+
+### Review
+- **content**: String
+- **userId**: Ref to User model
+- **listingId**: Ref to Listing model
 
 ## API Routes
-- **User Routes:** `/api/users`
-- **Property Routes:** `/api/properties`
-- **Booking Routes:** `/api/bookings`
-- **Review Routes:** `/api/reviews`
+- **GET /api/listings**: Retrieves all listings.
+- **POST /api/listings**: Creates a new listing.
+- **GET /api/reviews**: Retrieves all reviews for a listing.
+- **POST /api/reviews**: Adds a new review.
 
-## Authentication
-- Users can sign up and sign in using JWT for secure sessions.
-- Passwords are hashed for security using bcrypt.
+## Authentication with Passport.js
+- User registration and login is managed via Passport.js, ensuring secure and efficient user sessions.
+- Sessions are stored in the database to maintain state across server requests.
 
-## Deployment
-The application can be deployed using platforms like Heroku or AWS. Follow the specific instructions on the respective documentation for deploying Node.js applications. 
+## Cloudinary Integration
+Images for listings are uploaded and managed using Cloudinary to provide robust media hosting and transformation abilities.
+
+## Environment Variables Setup
+Ensure to set the following environment variables:
+- `MONGODB_URI`
+- `SESSION_SECRET`
+- `CLOUDINARY_URL`
+
+## Installation and Usage
+1. Clone the repository: `git clone https://github.com/Sahil-Lathiya/Wanderlust-Clone`
+2. Navigate to the project folder: `cd Wanderlust-Clone`
+3. Install dependencies: `npm install`
+4. Set up your environment variables in a `.env` file.
+5. Run the application: `npm start`
+
+Visit `http://localhost:3000` to view the application in your browser.
