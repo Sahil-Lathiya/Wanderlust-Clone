@@ -16,6 +16,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 const { createSessionOptions } = require("./config/session.js");
+const { createSecurityHeaders } = require("./config/security.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -44,10 +45,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.disable("x-powered-by");
 if (isProduction) app.set("trust proxy", 1);
-app.use(require("helmet")({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-}));
+app.use(createSecurityHeaders({ isProduction }));
 app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);  // include - exculde for use in ejs already learned

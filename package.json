@@ -11,7 +11,14 @@
     "check": "node --check app.js && node --test",
     "start": "node app.js"
   },
-  "keywords": ["airbnb", "clone", "wanderlust", "nodejs", "express", "mongodb"],
+  "keywords": [
+    "airbnb",
+    "clone",
+    "wanderlust",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
   "author": "Sahil Lathiya",
   "license": "ISC",
   "description": "Express and MongoDB property-listing learning project",
@@ -27,6 +34,7 @@
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^4.22.1",
+    "express-rate-limit": "^8.6.2",
     "express-session": "^1.18.1",
     "helmet": "^8.1.0",
     "joi": "^17.13.3",
