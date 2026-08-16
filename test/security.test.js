@@ -3,7 +3,12 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { AUTH_LIMIT_DEFAULTS, createAuthLimiter } = require("../config/rateLimit.js");
+const {
+    AUTH_LIMIT_DEFAULTS,
+    LISTING_READ_LIMIT_DEFAULTS,
+    createAuthLimiter,
+    createListingReadLimiter,
+} = require("../config/rateLimit.js");
 const { createSecurityHeaders } = require("../config/security.js");
 
 
@@ -41,6 +46,26 @@ test("authentication limiter uses bounded modern defaults", () => {
     assert.equal(AUTH_LIMIT_DEFAULTS.standardHeaders, "draft-8");
     assert.equal(AUTH_LIMIT_DEFAULTS.legacyHeaders, false);
     assert.equal(typeof createAuthLimiter(), "function");
+});
+
+
+test("listing read limiter uses bounded modern defaults", () => {
+    assert.equal(LISTING_READ_LIMIT_DEFAULTS.windowMs, 15 * 60 * 1000);
+    assert.equal(LISTING_READ_LIMIT_DEFAULTS.limit, 300);
+    assert.equal(LISTING_READ_LIMIT_DEFAULTS.standardHeaders, "draft-8");
+    assert.equal(LISTING_READ_LIMIT_DEFAULTS.legacyHeaders, false);
+    assert.equal(typeof createListingReadLimiter(), "function");
+});
+
+
+test("listing database reads apply the listing limiter", () => {
+    const routes = fs.readFileSync(
+        path.join(__dirname, "..", "routes", "listing.js"),
+        "utf8"
+    );
+
+    assert.match(routes, /route\("\/"\)[\s\S]*?\.get\(\s*listingReadLimiter,\s*wrapAsync\(listingController\.index\)\)/);
+    assert.match(routes, /route\("\/:id"\)[\s\S]*?\.get\(\s*listingReadLimiter,\s*wrapAsync\(listingController\.showListing\)\)/);
 });
 
 

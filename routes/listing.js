@@ -4,6 +4,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js"); //listing model access
 const { isPublicWriteEnabled, isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
+const { createListingReadLimiter } = require("../config/rateLimit.js");
 
 const multer = require('multer');
 const upload = multer({
@@ -14,11 +15,14 @@ const upload = multer({
         callback(allowed.has(file.mimetype) ? null : new Error("Only JPG, PNG and WebP images are allowed"), allowed.has(file.mimetype));
     },
 });
+const listingReadLimiter = createListingReadLimiter();
 
 
 router
     .route("/")
-    .get(wrapAsync(listingController.index))
+    .get(
+        listingReadLimiter,
+        wrapAsync(listingController.index))
     .post(
         isPublicWriteEnabled,
         isLoggedIn,
@@ -37,6 +41,7 @@ router.get(
 router
     .route("/:id")
     .get(
+        listingReadLimiter,
         wrapAsync(listingController.showListing))
     .put(
         isPublicWriteEnabled,
