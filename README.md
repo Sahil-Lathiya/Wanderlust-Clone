@@ -28,9 +28,9 @@ An Express and MongoDB learning project for property listings and reviews. It de
 
 This learning project has not had an independent security audit and does not process payments or sensitive booking data.
 
-The production deployment disables account registration, login and all write routes by default. To exercise authenticated CRUD flows in a local development environment, keep `NODE_ENV=development`. A private test deployment can explicitly set `PUBLIC_WRITE_ACCESS=true`.
+Write access is disabled unless `PUBLIC_WRITE_ACCESS=true` is set explicitly. The public read-only runtime does not initialise MongoDB, sessions or Passport authentication. To exercise authenticated CRUD flows, use an isolated local development database and the values documented in `.env.example`.
 
-The public deployment uses a deterministic six-record sample catalogue, so user-created database content is never exposed through the portfolio website. Local development continues to use MongoDB-backed CRUD flows.
+The public deployment uses a deterministic six-record sample catalogue, so user-created database content is never exposed through the portfolio website. Local development can continue to use MongoDB-backed CRUD flows after explicitly enabling write access.
 
 ## Local setup
 
@@ -48,7 +48,7 @@ Required environment values are documented in `.env.example`. Use a development 
 npm run check
 ```
 
-The test suite covers session-cookie policy, request validation and the review-delete visibility rule.
+The test suite covers read-only runtime isolation, blocked write routes, session-cookie policy, request validation and authorization-sensitive templates.
 
 ## Main routes
 

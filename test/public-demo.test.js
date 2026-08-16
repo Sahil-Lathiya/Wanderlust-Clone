@@ -15,17 +15,19 @@ function collectTemplates(directory, templates = []) {
 }
 
 test("production deployment is read-only by default", () => {
-    assert.equal(isPublicWriteAccessEnabled({ isProduction: true }), false);
-    assert.equal(isPublicWriteAccessEnabled({ isProduction: true, configuredValue: "false" }), false);
+    assert.equal(isPublicWriteAccessEnabled(), false);
+    assert.equal(isPublicWriteAccessEnabled({ configuredValue: "false" }), false);
 });
 
-test("production write access requires an explicit opt-in", () => {
-    assert.equal(isPublicWriteAccessEnabled({ isProduction: true, configuredValue: "true" }), true);
-    assert.equal(isPublicWriteAccessEnabled({ isProduction: true, configuredValue: "TRUE" }), false);
+test("write access requires an exact explicit opt-in", () => {
+    assert.equal(isPublicWriteAccessEnabled({ configuredValue: "true" }), true);
+    assert.equal(isPublicWriteAccessEnabled({ configuredValue: "TRUE" }), false);
 });
 
-test("local development keeps authenticated feature testing available", () => {
-    assert.equal(isPublicWriteAccessEnabled({ isProduction: false }), true);
+test("write access remains fail-closed outside production", () => {
+    assert.equal(isPublicWriteAccessEnabled(), false);
+    assert.equal(isPublicWriteAccessEnabled({ configuredValue: "false" }), false);
+    assert.equal(isPublicWriteAccessEnabled({ configuredValue: "true" }), true);
 });
 
 test("public templates contain no third-party travel brand wording", () => {

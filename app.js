@@ -28,21 +28,13 @@ const userRouter = require("./routes/user.js");
 const dbUrl = process.env.ATLASDB_URL;
 const isProduction = process.env.NODE_ENV === "production";
 const publicWriteAccessEnabled = isPublicWriteAccessEnabled({
-    isProduction,
     configuredValue: process.env.PUBLIC_WRITE_ACCESS,
 });
 
-if (!dbUrl) {
-    throw new Error("ATLASDB_URL is required");
-}
-if (!process.env.SECRET) {
-    throw new Error("SECRET is required");
-}
-
-
-
 async function main() {
+    if (!publicWriteAccessEnabled) return false;
     await mongoose.connect(dbUrl);
+    return true;
 }
 
 // Middleware and settings
@@ -56,43 +48,49 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);  // include - exculde for use in ejs already learned
 app.use(express.static(path.join(__dirname, "/public")));
 
-const store = MongoStore.create({
-    mongoUrl: dbUrl,
-    crypto: {
+if (publicWriteAccessEnabled) {
+    if (!dbUrl) {
+        throw new Error("ATLASDB_URL is required when PUBLIC_WRITE_ACCESS=true");
+    }
+    if (!process.env.SECRET) {
+        throw new Error("SECRET is required when PUBLIC_WRITE_ACCESS=true");
+    }
+
+    const store = MongoStore.create({
+        mongoUrl: dbUrl,
+        crypto: {
+            secret: process.env.SECRET,
+        },
+        touchAfter: 24 * 60 * 60,
+    });
+
+    store.on("error", (err) => {
+        console.log("ERROR in MONGO SESSION STORE", err);
+    });
+
+    const sessionOptions = createSessionOptions({
+        store,
         secret: process.env.SECRET,
-    },
-    touchAfter: 24 * 60 * 60,
-});
+        isProduction,
+    });
 
-store.on("error", (err) => {
-    console.log("ERROR in MONGO SESSION STORE", err);
-});
+    app.use(session(sessionOptions));
+    app.use(flash());
 
-const sessionOptions = createSessionOptions({
-    store,
-    secret: process.env.SECRET,
-    isProduction,
-});
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use(new LocalStrategy(User.authenticate()));
 
-
-
-
-app.use(session(sessionOptions));
-app.use(flash());
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+}
 
 
 
 app.use((req, res, next) => {
-    res.locals.success = req.flash("success");
-    res.locals.error = req.flash("error");
-    res.locals.currUser = req.user;
+    res.locals.success = publicWriteAccessEnabled ? req.flash("success") : [];
+    res.locals.error = publicWriteAccessEnabled ? req.flash("error") : [];
+    res.locals.currUser = publicWriteAccessEnabled ? req.user : null;
     res.locals.publicWriteAccessEnabled = publicWriteAccessEnabled;
     next();
 });
@@ -138,8 +136,12 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 8080;
 
 async function start() {
-    await main();
-    console.log("Connected to DB");
+    const connectedToDatabase = await main();
+    if (connectedToDatabase) {
+        console.log("Connected to DB");
+    } else {
+        console.log("Read-only mode: database connection disabled");
+    }
     return app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });

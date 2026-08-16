@@ -1,5 +1,4 @@
-function isPublicWriteAccessEnabled({ isProduction, configuredValue } = {}) {
-    if (!isProduction) return true;
+function isPublicWriteAccessEnabled({ configuredValue } = {}) {
     return configuredValue === "true";
 }
 

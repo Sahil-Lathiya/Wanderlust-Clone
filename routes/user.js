@@ -36,6 +36,6 @@ router
     );
 
 
-router.post("/logout", userController.logout);
+router.post("/logout", isPublicWriteEnabled, userController.logout);
 
 module.exports = router;
