@@ -1,5 +1,4 @@
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -7,15 +6,24 @@ cloudinary.config({
     api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'wanderlust_DEV',
-        allowerdFormats: ["png", "jpg", "jpeg"],
-    },
-});
+function uploadImage(buffer) {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "wanderlust_DEV",
+                resource_type: "image",
+                allowed_formats: ["png", "jpg", "jpeg", "webp"],
+            },
+            (error, result) => {
+                if (error) return reject(error);
+                return resolve(result);
+            }
+        );
+        stream.end(buffer);
+    });
+}
 
 module.exports = {
     cloudinary,
-    storage,
+    uploadImage,
 };

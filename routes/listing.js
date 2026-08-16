@@ -6,9 +6,14 @@ const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 
 const multer = require('multer');
-const { storage } = require("../cloudConfig.js"); //cloudinary config access
-
-const upload = multer({ storage });
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, callback) => {
+        const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+        callback(allowed.has(file.mimetype) ? null : new Error("Only JPG, PNG and WebP images are allowed"), allowed.has(file.mimetype));
+    },
+});
 
 
 router

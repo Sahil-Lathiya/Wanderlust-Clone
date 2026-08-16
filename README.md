@@ -1,84 +1,63 @@
 # Wanderlust Clone
 
-## Project Overview
-Wanderlust Clone is a web application designed for users to explore and create travel listings, read and write reviews, and manage user authentication through a seamless interface.
+An Express and MongoDB learning project for property listings and reviews. It demonstrates server-rendered CRUD flows, authentication, ownership checks, image uploads and responsive EJS templates.
 
-## Tech Stack
-- **Node.js**: The application server is built using Node.js, providing a scalable network application.
-- **Express**: We utilize Express.js to simplify routing and middleware management.
-- **MongoDB**: The data is stored in a MongoDB database to ensure a flexible schema design, allowing for easy data manipulation.
-- **EJS**: Embedded JavaScript templating is used for rendering dynamic web pages.
-- **Passport.js**: For user authentication, Passport.js offers a simple and reliable way to manage user sessions.
+> Portfolio code sample, not a booking service. Listings are user-generated demo data, payments and reservations are not implemented, and the hosted environment may sleep when inactive.
 
-## Features
-- **Listings**: Users can view and create travel listings.
-- **Reviews**: Users are able to write reviews on listings they've visited.
-- **User Authentication**: Registration and login functionality to ensure a personalized experience for users.
+## Implemented
 
-## Deployment
-The application is deployed on **Render**, enabling high availability and ease of access for users.
+- register, log in and log out with Passport.js;
+- create, view, edit and delete owned listings;
+- add and delete owned reviews;
+- search by listing title, location or country;
+- upload listing images through Cloudinary;
+- validate listing and review payloads with Joi;
+- store sessions in MongoDB;
+- apply secure cookie settings and common HTTP security headers.
 
-## Project Structure
-```
-Wanderlust-Clone/
-├── models/
-│   ├── User.js
-│   ├── Listing.js
-│   ├── Review.js
-├── routes/
-│   ├── api/
-│   │   ├── listings.js
-│   │   ├── reviews.js
-│   │   ├── users.js
-│   ├── index.js
-├── views/
-│   ├── listings/  
-│   ├── reviews/
-│   ├── users/
-└── app.js
+## Security boundaries
+
+- create, update and delete routes require authentication;
+- listing changes require server-side owner checks;
+- review deletion requires a server-side author check;
+- edit and delete controls are hidden from other users in the rendered UI;
+- production cookies use `HttpOnly`, `SameSite=Lax` and `Secure`;
+- the session secret must contain at least 32 characters.
+
+This learning project has not had an independent security audit and does not process payments or sensitive booking data.
+
+## Local setup
+
+```bash
+cp .env.example .env
+npm ci
+npm start
 ```
 
-## Database Models
-### User
-- **username**: String
-- **password**: String
-- **email**: String
+Required environment values are documented in `.env.example`. Use a development MongoDB database and a separate Cloudinary folder/account.
 
-### Listing
-- **title**: String
-- **description**: String
-- **location**: String
-- **userId**: Ref to User model
+## Verify
 
-### Review
-- **content**: String
-- **userId**: Ref to User model
-- **listingId**: Ref to Listing model
+```bash
+npm run check
+```
 
-## API Routes
-- **GET /api/listings**: Retrieves all listings.
-- **POST /api/listings**: Creates a new listing.
-- **GET /api/reviews**: Retrieves all reviews for a listing.
-- **POST /api/reviews**: Adds a new review.
+The test suite covers session-cookie policy, request validation and the review-delete visibility rule.
 
-## Authentication with Passport.js
-- User registration and login is managed via Passport.js, ensuring secure and efficient user sessions.
-- Sessions are stored in the database to maintain state across server requests.
+## Main routes
 
-## Cloudinary Integration
-Images for listings are uploaded and managed using Cloudinary to provide robust media hosting and transformation abilities.
+| Method | Route | Purpose | Access |
+|---|---|---|---|
+| GET | `/listings` | Browse and search | Public |
+| POST | `/listings` | Create listing | Signed in |
+| PUT/DELETE | `/listings/:id` | Change owned listing | Owner |
+| POST | `/listings/:id/reviews` | Add review | Signed in |
+| DELETE | `/listings/:id/reviews/:reviewId` | Delete review | Author |
 
-## Environment Variables Setup
-Ensure to set the following environment variables:
-- `MONGODB_URI`
-- `SESSION_SECRET`
-- `CLOUDINARY_URL`
+## Stack
 
-## Installation and Usage
-1. Clone the repository: `git clone https://github.com/Sahil-Lathiya/Wanderlust-Clone`
-2. Navigate to the project folder: `cd Wanderlust-Clone`
-3. Install dependencies: `npm install`
-4. Set up your environment variables in a `.env` file.
-5. Run the application: `npm start`
+Node.js, Express, MongoDB, Mongoose, EJS, Passport.js, Joi, Cloudinary and Bootstrap.
 
-Visit `http://localhost:3000` to view the application in your browser.
+## Licence
+
+[ISC](LICENSE)

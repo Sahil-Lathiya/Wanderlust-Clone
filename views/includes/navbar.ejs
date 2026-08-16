@@ -38,8 +38,8 @@
 
             </div>
             <div class="navbar-nav ms-auto">
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations">
+                <form class="d-flex" role="search" method="GET" action="/listings">
+                    <input class="form-control me-2 search-inp" type="search" name="q" value="<%= typeof query !== 'undefined' ? query : '' %>" placeholder="Search destinations" aria-label="Search listings">
                     <button class="btn search-btn" type="submit"><i
                             class="fa-solid fa-magnifying-glass"></i>Search</button>
                 </form>
@@ -51,7 +51,9 @@
                     <a class="nav-link" href="/login"><b>Log in</b></a>
                     <% } %>
                         <% if (currUser) { %>
-                            <a class="nav-link" href="/logout"><b>Log out</b></a>
+                            <form method="POST" action="/logout">
+                                <button class="nav-link btn btn-link" type="submit"><b>Log out</b></button>
+                            </form>
                             <% } %>
             </div>
         </div>

@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user.js");
 const passport = require("passport");
-const wrapAsync = require("../utils/wrapAsync.js");
 const { saveRedirectUrl } = require("../middleware.js");
 const userController = require("../controllers/users.js");
 
@@ -13,7 +11,7 @@ router
     .get(
         userController.renderSignupForm)
     .post(
-        wrapAsync(userController.signup));
+        userController.signup);
 
 
 router
@@ -31,7 +29,6 @@ router
     );
 
 
-// TO DO: implement logout functionality
-router.get("/logout", userController.logout);
+router.post("/logout", userController.logout);
 
 module.exports = router;

@@ -11,7 +11,7 @@
             <div class="card-body">
                 <p class="card-text"> Owned by
                     <i>
-                        <%= listing.owner.username %>
+                        <%= listing.owner ? listing.owner.username : "Unknown owner" %>
                     </i>
                 </p>
                 <p class="card-text">
@@ -97,10 +97,12 @@
                                             </p>
 
                                         </div>
-                                        <form class="mb-3" method="POST"
-                                            action="/listings/<%= listing._id %>/reviews/<%= review._id%>?_method=DELETE">
-                                            <button class="btn btn-sm btn-dark mt-3">Delete</button>
-                                        </form>
+                                        <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                                            <form class="mb-3" method="POST"
+                                                action="/listings/<%= listing._id %>/reviews/<%= review._id%>?_method=DELETE">
+                                                <button class="btn btn-sm btn-dark mt-3">Delete</button>
+                                            </form>
+                                        <% } %>
                                     </div>
                                     <% } %>
                             </div>

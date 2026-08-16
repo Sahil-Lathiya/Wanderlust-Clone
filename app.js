@@ -15,6 +15,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const { createSessionOptions } = require("./config/session.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -23,15 +24,16 @@ const userRouter = require("./routes/user.js");
 
 
 const dbUrl = process.env.ATLASDB_URL;
+const isProduction = process.env.NODE_ENV === "production";
+
+if (!dbUrl) {
+    throw new Error("ATLASDB_URL is required");
+}
+if (!process.env.SECRET) {
+    throw new Error("SECRET is required");
+}
 
 
-
-main()
-    .then(() => {
-        console.log("Connected to DB");
-    }).catch((err) => {
-        console.log(err);
-    });
 
 async function main() {
     await mongoose.connect(dbUrl);
@@ -40,7 +42,13 @@ async function main() {
 // Middleware and settings
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({ extended: true }));  // Show route id extract for
+app.disable("x-powered-by");
+if (isProduction) app.set("trust proxy", 1);
+app.use(require("helmet")({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+}));
+app.use(express.urlencoded({ extended: true, limit: "100kb" }));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);  // include - exculde for use in ejs already learned
 app.use(express.static(path.join(__dirname, "/public")));
@@ -53,21 +61,15 @@ const store = MongoStore.create({
     touchAfter: 24 * 60 * 60,
 });
 
-store.on("error", () => {
+store.on("error", (err) => {
     console.log("ERROR in MONGO SESSION STORE", err);
 });
 
-const sessionOptions = {
+const sessionOptions = createSessionOptions({
     store,
     secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-    },
-};
+    isProduction,
+});
 
 
 
@@ -109,15 +111,29 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-
     let { statusCode = 500, message = "Something went wrong!" } = err;
-    //res.status(statusCode).send(message);
+    if (statusCode >= 500 && isProduction) {
+        message = "Something went wrong!";
+    }
     res.status(statusCode).render("error.ejs", { message });
-    //res.send("Something went wrong!");
 });
 
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+
+async function start() {
+    await main();
+    console.log("Connected to DB");
+    return app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
+
+if (require.main === module) {
+    start().catch((error) => {
+        console.error("Application startup failed:", error.message);
+        process.exitCode = 1;
+    });
+}
+
+module.exports = { app, start };
