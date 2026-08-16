@@ -4,6 +4,8 @@ An Express and MongoDB learning project for property listings and reviews. It de
 
 > Portfolio code sample, not a booking service. The hosted version is read-only, listings are demonstration data, payments and reservations are not implemented, and the environment may sleep when inactive.
 
+[View the live read-only demo](https://sahil-wanderlust-portfolio.onrender.com/listings)
+
 ## Implemented
 
 - register, log in and log out with Passport.js;
@@ -27,6 +29,8 @@ An Express and MongoDB learning project for property listings and reviews. It de
 This learning project has not had an independent security audit and does not process payments or sensitive booking data.
 
 The production deployment disables account registration, login and all write routes by default. To exercise authenticated CRUD flows in a local development environment, keep `NODE_ENV=development`. A private test deployment can explicitly set `PUBLIC_WRITE_ACCESS=true`.
+
+The public deployment uses a deterministic six-record sample catalogue, so user-created database content is never exposed through the portfolio website. Local development continues to use MongoDB-backed CRUD flows.
 
 ## Local setup
 

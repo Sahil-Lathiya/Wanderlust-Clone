@@ -1,10 +1,22 @@
 const Listing = require("../models/listing"); //listing model access
 const ExpressError = require("../utils/ExpressError");
 const { cloudinary, uploadImage } = require("../cloudConfig");
+const {
+    searchPublicDemoListings,
+    findPublicDemoListing,
+} = require("../data/publicDemoListings");
 
 
 module.exports.index = async (req, res) => {
     const query = String(req.query.q || "").trim();
+    if (res.locals.publicWriteAccessEnabled === false) {
+        return res.render("listings/index.ejs", {
+            allListings: searchPublicDemoListings(query),
+            query,
+            isCuratedDemo: true,
+        });
+    }
+
     const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const filter = query
         ? {
@@ -16,7 +28,7 @@ module.exports.index = async (req, res) => {
         }
         : {};
     const allListings = await Listing.find(filter).sort({ _id: -1 });
-    res.render("listings/index.ejs", { allListings, query });
+    res.render("listings/index.ejs", { allListings, query, isCuratedDemo: false });
 };
 
 module.exports.renderNewForm = (req, res) => {
@@ -25,6 +37,14 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.showListing = async (req, res) => {
     let { id } = req.params;
+    if (res.locals.publicWriteAccessEnabled === false) {
+        const listing = findPublicDemoListing(id);
+        if (!listing) {
+            throw new ExpressError(404, "Sample listing not found");
+        }
+        return res.render("listings/show.ejs", { listing });
+    }
+
     //id = id.trim();  // Trim any extra spaces
     const listing = await Listing.findById(id)
         .populate({

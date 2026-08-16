@@ -17,13 +17,3 @@
         }, false)
     })
 })()
-
-const taxSwitch = document.getElementById("flexSwitchCheckDefault");
-
-if (taxSwitch) {
-    taxSwitch.addEventListener("click", () => {
-        document.querySelectorAll(".tax-info").forEach((taxInfo) => {
-            taxInfo.classList.toggle("tax-info-visible");
-        });
-    });
-}

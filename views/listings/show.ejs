@@ -1,51 +1,42 @@
 <% layout("layouts/boilerplate") %>
 
-    <div class="row mt-3">
-        <div class="col-8 offset-3">
-            <h3>
-                <%= listing.title %>
-            </h3>
-        </div>
-        <div class="card col-6 offset-3 show-card listing-card mb-3">
-            <img src="<%=listing.image.url %>" class="card-img-top show-img" alt="listing_image">
-            <div class="card-body">
-                <p class="card-text"> Owned by
-                    <i>
-                        <%= listing.owner ? listing.owner.username : "Unknown owner" %>
-                    </i>
-                </p>
-                <p class="card-text">
-                    <%= listing.description %>
-                </p>
-                <p class="card-text">&#8377;<%= listing.price.toLocaleString("en-In") %>
-                </p>
-                <p class="card-text">
-                    <%= listing.location %>
-                </p>
-                <p class="card-text">
-                    <%= listing.country %>
-                </p>
-            </div>
-        </div>
+    <section class="listing-detail-header">
+        <a href="/listings" class="back-link"><i class="fa-solid fa-arrow-left"></i> All sample listings</a>
+        <p class="eyebrow"><%= publicWriteAccessEnabled ? "Listing details" : "Curated sample listing" %></p>
+        <h1><%= listing.title %></h1>
+        <p><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></p>
+    </section>
 
-        <br>
+    <article class="listing-detail-card">
+        <img src="<%= listing.image.url %>" class="show-img" alt="<%= listing.title %>">
+        <div class="listing-detail-body">
+            <% if (!publicWriteAccessEnabled) { %>
+                <span class="demo-pill">Sample data — not bookable</span>
+            <% } else { %>
+                <p class="listing-owner">Owned by <strong><%= listing.owner ? listing.owner.username : "Unknown owner" %></strong></p>
+            <% } %>
+            <p class="listing-description"><%= listing.description %></p>
+            <p class="listing-price listing-detail-price">£<%= Number(listing.price).toLocaleString("en-GB") %> <span>/ sample night</span></p>
+            <% if (!publicWriteAccessEnabled) { %>
+                <p class="demo-explainer">This deterministic record keeps the public portfolio safe and consistent. Authenticated CRUD remains available for local development.</p>
+            <% } %>
+        </div>
+    </article>
 
-        <% if(publicWriteAccessEnabled && currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+        <% if (publicWriteAccessEnabled && currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
             <div class="btns">
-                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 add-btn">Edit</a>
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark add-btn">Edit</a>
 
                 <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
-                    <button class="btn btn-dark offset-5">Delete</button>
+                    <button class="btn btn-dark">Delete</button>
                 </form>
             </div>
+        <% } %>
 
-            <% } %>
-
-
-
-                <div class="col-8 offset-3 mb-3">
+        <% if (publicWriteAccessEnabled) { %>
+                <div class="reviews-section">
                     <hr />
-                    <% if (publicWriteAccessEnabled && currUser) { %>
+                    <% if (currUser) { %>
                         <h4>Leave a Review</h4>
                         <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate
                             class="needs-validation">
@@ -77,17 +68,17 @@
                             <button class="btn btn-outline-dark">Submit</button>
                         </form>
                         <hr>
-                        <% } %>
+                    <% } %>
 
 
 
                             <!-- // Rating shows  -->
                             <p><b>All reviews</b></p>
                             <div class="row">
-                                <% for (review of listing.reviews) { %>
+                                <% for (review of (listing.reviews || [])) { %>
                                     <div class="card col-5 ms-3 mb-3">
                                         <div class="card-body">
-                                            <h5 class="card-title">@<%= review.author.username %>
+                                            <h5 class="card-title">@<%= review.author ? review.author.username : "Unknown user" %>
                                             </h5>
                                             <p class="starability-result card-text" data-rating="<%= review.rating %>">
                                             </p>
@@ -107,5 +98,4 @@
                                     <% } %>
                             </div>
                 </div>
-
-    </div>
+        <% } %>
