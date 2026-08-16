@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js"); //listing model access
-const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
+const { isPublicWriteEnabled, isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 
 const multer = require('multer');
@@ -20,6 +20,7 @@ router
     .route("/")
     .get(wrapAsync(listingController.index))
     .post(
+        isPublicWriteEnabled,
         isLoggedIn,
         upload.single("listing[image]"),
         validateListing,
@@ -28,6 +29,7 @@ router
 // New Route
 router.get(
     "/new",
+    isPublicWriteEnabled,
     isLoggedIn,
     listingController.renderNewForm);
 
@@ -37,12 +39,14 @@ router
     .get(
         wrapAsync(listingController.showListing))
     .put(
+        isPublicWriteEnabled,
         isLoggedIn,
         isOwner,
         upload.single("listing[image]"),
         validateListing,
         wrapAsync(listingController.updateListing))
     .delete(
+        isPublicWriteEnabled,
         isLoggedIn,
         isOwner,
         wrapAsync(listingController.destroyListing));
@@ -51,6 +55,7 @@ router
 // Edit Route
 router.get(
     "/:id/edit",
+    isPublicWriteEnabled,
     isLoggedIn,
     isOwner,
     wrapAsync(listingController.renderEditForm));

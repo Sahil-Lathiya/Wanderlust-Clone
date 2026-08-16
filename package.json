@@ -3,7 +3,7 @@
     "node": ">=20.x",
     "npm": ">=10.x"
   },
-  "name": "majorproject",
+  "name": "wanderlust-property-demo",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -12,8 +12,8 @@
     "start": "node app.js"
   },
   "keywords": [
-    "airbnb",
-    "clone",
+    "property-listings",
+    "portfolio-demo",
     "wanderlust",
     "nodejs",
     "express",

@@ -30,7 +30,7 @@
 
         <br>
 
-        <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+        <% if(publicWriteAccessEnabled && currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
             <div class="btns">
                 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 add-btn">Edit</a>
 
@@ -45,7 +45,7 @@
 
                 <div class="col-8 offset-3 mb-3">
                     <hr />
-                    <% if (currUser) { %>
+                    <% if (publicWriteAccessEnabled && currUser) { %>
                         <h4>Leave a Review</h4>
                         <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate
                             class="needs-validation">
@@ -97,7 +97,7 @@
                                             </p>
 
                                         </div>
-                                        <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                                        <% if (publicWriteAccessEnabled && currUser && review.author && review.author._id.equals(currUser._id)) { %>
                                             <form class="mb-3" method="POST"
                                                 action="/listings/<%= listing._id %>/reviews/<%= review._id%>?_method=DELETE">
                                                 <button class="btn btn-sm btn-dark mt-3">Delete</button>

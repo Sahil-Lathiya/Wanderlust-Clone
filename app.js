@@ -17,6 +17,7 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 const { createSessionOptions } = require("./config/session.js");
 const { createSecurityHeaders } = require("./config/security.js");
+const { isPublicWriteAccessEnabled } = require("./config/publicDemo.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -26,6 +27,10 @@ const userRouter = require("./routes/user.js");
 
 const dbUrl = process.env.ATLASDB_URL;
 const isProduction = process.env.NODE_ENV === "production";
+const publicWriteAccessEnabled = isPublicWriteAccessEnabled({
+    isProduction,
+    configuredValue: process.env.PUBLIC_WRITE_ACCESS,
+});
 
 if (!dbUrl) {
     throw new Error("ATLASDB_URL is required");
@@ -88,12 +93,25 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.publicWriteAccessEnabled = publicWriteAccessEnabled;
     next();
 });
 
 // Define the home route to redirect to listings
 app.get("/", (req, res) => {
     res.redirect("/listings");
+});
+
+app.get("/about", (req, res) => {
+    res.render("legal/about.ejs");
+});
+
+app.get("/privacy", (req, res) => {
+    res.render("legal/privacy.ejs");
+});
+
+app.get("/terms", (req, res) => {
+    res.render("legal/terms.ejs");
 });
 
 

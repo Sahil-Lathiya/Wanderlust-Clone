@@ -1,8 +1,8 @@
-# Wanderlust Clone
+# Wanderlust Property Listings Demo
 
 An Express and MongoDB learning project for property listings and reviews. It demonstrates server-rendered CRUD flows, authentication, ownership checks, image uploads and responsive EJS templates.
 
-> Portfolio code sample, not a booking service. Listings are user-generated demo data, payments and reservations are not implemented, and the hosted environment may sleep when inactive.
+> Portfolio code sample, not a booking service. The hosted version is read-only, listings are demonstration data, payments and reservations are not implemented, and the environment may sleep when inactive.
 
 ## Implemented
 
@@ -25,6 +25,8 @@ An Express and MongoDB learning project for property listings and reviews. It de
 - the session secret must contain at least 32 characters.
 
 This learning project has not had an independent security audit and does not process payments or sensitive booking data.
+
+The production deployment disables account registration, login and all write routes by default. To exercise authenticated CRUD flows in a local development environment, keep `NODE_ENV=development`. A private test deployment can explicitly set `PUBLIC_WRITE_ACCESS=true`.
 
 ## Local setup
 

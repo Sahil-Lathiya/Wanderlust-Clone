@@ -27,6 +27,7 @@ function renderShow(currUser) {
     return ejs.render(template, {
         layout() {},
         currUser,
+        publicWriteAccessEnabled: true,
         listing: {
             _id: "listing-1",
             title: "Test listing",

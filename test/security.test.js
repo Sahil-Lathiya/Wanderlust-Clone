@@ -50,8 +50,8 @@ test("signup and login routes apply the authentication limiter", () => {
         "utf8"
     );
 
-    assert.match(routes, /route\("\/signup"\)[\s\S]*?\.post\(\s*authLimiter,/);
-    assert.match(routes, /route\("\/login"\)[\s\S]*?\.post\(\s*authLimiter,/);
+    assert.match(routes, /route\("\/signup"\)[\s\S]*?\.post\(\s*isPublicWriteEnabled,\s*authLimiter,/);
+    assert.match(routes, /route\("\/login"\)[\s\S]*?\.post\(\s*isPublicWriteEnabled,\s*authLimiter,/);
 });
 
 

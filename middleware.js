@@ -5,6 +5,14 @@ const Review = require("./models/review");
 
 
 
+module.exports.isPublicWriteEnabled = (req, res, next) => {
+    if (!res.locals.publicWriteAccessEnabled) {
+        return res.status(403).render("users/read-only.ejs");
+    }
+    next();
+};
+
+
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;

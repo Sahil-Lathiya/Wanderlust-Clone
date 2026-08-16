@@ -5,6 +5,9 @@ body {
     min-height: 100vh;
 }
 
+.demo-notice { background: #17202a; color: #fff; font-size: 0.9rem; padding: 0.65rem 1rem; text-align: center; }
+.demo-notice strong { margin-right: 0.25rem; }
+
 .container {
     flex: 1;
 }
@@ -13,6 +16,13 @@ body {
     height: 5rem;
     background-color: white;
 }
+
+.navbar-brand { align-items: center; display: flex; gap: 0.6rem; }
+.brand-name { color: #222; font-size: 1rem; font-weight: 700; }
+.read-only-label { background: #f1f3f5; border-radius: 999px; color: #495057; font-size: 0.8rem; font-weight: 700; padding: 0.4rem 0.75rem; }
+.search-btn { background-color: #f2424d !important; border-color: #f2424d !important; border-radius: 25px !important; color: #fff !important; padding: 0 1rem !important; }
+.search-btn i { display: inline; margin-right: 0.5rem; }
+.search-inp { border-radius: 25px !important; font-size: 1rem !important; padding: 0.5rem 3rem !important; text-align: center; }
 
 /* App symbol */
 .fa-compass {
@@ -29,6 +39,8 @@ body {
     text-decoration: none;
     color: #222222;
 }
+
+.f-info-links { gap: 1rem; }
 
 .f-info-links a:hover {
     text-decoration: underline;
@@ -56,6 +68,19 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     align-items: space-evenly;
+}
+
+.trust-page { margin: 4rem auto; max-width: 760px; }
+.trust-page h1 { font-weight: 750; margin-bottom: 1.25rem; }
+.trust-page h2 { font-size: 1.25rem; margin-top: 2rem; }
+.trust-page p, .trust-page li { line-height: 1.7; }
+.eyebrow { color: #b4232d; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.trust-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+
+@media (max-width: 767px) {
+    .navbar { height: auto; min-height: 5rem; }
+    .search-inp { padding: 0.5rem 1rem !important; }
+    .f-info { height: auto; padding: 1.25rem 0; }
 }
 
 /* Cards */
@@ -156,4 +181,3 @@ body {
     padding-left: 0;
     padding-right: 0;
 }
-
