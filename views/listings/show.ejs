@@ -28,6 +28,7 @@
                 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark add-btn">Edit</a>
 
                 <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="btn btn-dark">Delete</button>
                 </form>
             </div>
@@ -40,6 +41,7 @@
                         <h4>Leave a Review</h4>
                         <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate
                             class="needs-validation">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
                             <div class="mt-3 mb-3">
                                 <label for="comment" class="form-label">Rating</label>
@@ -91,6 +93,7 @@
                                         <% if (publicWriteAccessEnabled && currUser && review.author && review.author._id.equals(currUser._id)) { %>
                                             <form class="mb-3" method="POST"
                                                 action="/listings/<%= listing._id %>/reviews/<%= review._id%>?_method=DELETE">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                 <button class="btn btn-sm btn-dark mt-3">Delete</button>
                                             </form>
                                         <% } %>

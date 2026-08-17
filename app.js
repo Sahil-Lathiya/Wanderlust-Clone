@@ -18,6 +18,10 @@ const User = require("./models/user.js");
 const { createSessionOptions } = require("./config/session.js");
 const { createSecurityHeaders } = require("./config/security.js");
 const { isPublicWriteAccessEnabled } = require("./config/publicDemo.js");
+const {
+    csrfSynchronisedProtection,
+    exposeCsrfToken,
+} = require("./config/csrf.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -71,7 +75,6 @@ if (publicWriteAccessEnabled) {
     const sessionOptions = createSessionOptions({
         store,
         secret: process.env.SECRET,
-        isProduction,
     });
 
     app.use(session(sessionOptions));
@@ -83,6 +86,8 @@ if (publicWriteAccessEnabled) {
 
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
+
+    app.use(exposeCsrfToken);
 }
 
 
@@ -94,6 +99,10 @@ app.use((req, res, next) => {
     res.locals.publicWriteAccessEnabled = publicWriteAccessEnabled;
     next();
 });
+
+if (publicWriteAccessEnabled) {
+    app.use(csrfSynchronisedProtection);
+}
 
 // Define the home route to redirect to listings
 app.get("/", (req, res) => {

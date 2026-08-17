@@ -1,4 +1,4 @@
-function createSessionOptions({ store, secret, isProduction = false }) {
+function createSessionOptions({ store, secret }) {
     if (!secret || secret.length < 32) {
         throw new Error("SECRET must contain at least 32 characters");
     }
@@ -13,7 +13,7 @@ function createSessionOptions({ store, secret, isProduction = false }) {
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             sameSite: "lax",
-            secure: isProduction,
+            secure: true,
         },
     };
 }

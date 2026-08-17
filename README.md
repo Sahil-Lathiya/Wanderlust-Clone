@@ -15,6 +15,7 @@ An Express and MongoDB learning project for property listings and reviews. It de
 - upload listing images through Cloudinary;
 - validate listing and review payloads with Joi;
 - store sessions in MongoDB;
+- protect state-changing forms with session-bound CSRF tokens;
 - apply secure cookie settings and common HTTP security headers.
 
 ## Security boundaries
@@ -24,6 +25,7 @@ An Express and MongoDB learning project for property listings and reviews. It de
 - review deletion requires a server-side author check;
 - edit and delete controls are hidden from other users in the rendered UI;
 - production cookies use `HttpOnly`, `SameSite=Lax` and `Secure`;
+- authenticated forms require a valid synchronizer CSRF token;
 - the session secret must contain at least 32 characters.
 
 This learning project has not had an independent security audit and does not process payments or sensitive booking data.
@@ -41,6 +43,7 @@ npm start
 ```
 
 Required environment values are documented in `.env.example`. Use a development MongoDB database and a separate Cloudinary folder/account.
+Authenticated mode requires HTTPS because session cookies are always marked `Secure`.
 
 ## Verify
 

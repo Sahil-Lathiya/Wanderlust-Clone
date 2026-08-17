@@ -9,6 +9,7 @@
                 <br>
                 <form method="POST" action="/listings" novalidate class="needs-validation"
                     enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="mb-3">
                         <label for="title" class="form-label mb-0">Title</label>
                         <input name="listing[title]" placeholder="Add a catchy title" type="text" class="form-control"

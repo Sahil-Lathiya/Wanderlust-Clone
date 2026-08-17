@@ -5,6 +5,7 @@ const Listing = require("../models/listing.js"); //listing model access
 const { isPublicWriteEnabled, isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 const { createListingReadLimiter } = require("../config/rateLimit.js");
+const { csrfMultipartProtection } = require("../config/csrf.js");
 
 const multer = require('multer');
 const upload = multer({
@@ -27,6 +28,7 @@ router
         isPublicWriteEnabled,
         isLoggedIn,
         upload.single("listing[image]"),
+        csrfMultipartProtection,
         validateListing,
         wrapAsync(listingController.createListing));
 
@@ -48,6 +50,7 @@ router
         isLoggedIn,
         isOwner,
         upload.single("listing[image]"),
+        csrfMultipartProtection,
         validateListing,
         wrapAsync(listingController.updateListing))
     .delete(
