@@ -27,7 +27,7 @@ function renderShow(currUser) {
     return ejs.render(template, {
         layout() {},
         currUser,
-        csrfToken: "test-csrf-token",
+        _csrf: "test-csrf-token",
         publicWriteAccessEnabled: true,
         listing: {
             _id: "listing-1",

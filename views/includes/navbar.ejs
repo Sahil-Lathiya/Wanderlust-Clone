@@ -30,7 +30,7 @@
                     <% } %>
                         <% if (publicWriteAccessEnabled && currUser) { %>
                             <form method="POST" action="/logout">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <input type="hidden" name="_csrf" value="<%= _csrf %>">
                                 <button class="nav-link btn btn-link" type="submit"><b>Log out</b></button>
                             </form>
                             <% } %>

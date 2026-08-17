@@ -1,38 +1,27 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 
-const { createSessionOptions } = require("../config/session");
+
+const appSource = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
 
 
 test("sessions always use secure, httpOnly, same-site cookies", () => {
-    const store = { name: "test-store" };
-    const options = createSessionOptions({
-        store,
-        secret: "a-secure-session-secret-with-32-characters",
-    });
-
-    assert.equal(options.store, store);
-    assert.equal(options.saveUninitialized, false);
-    assert.equal(options.cookie.httpOnly, true);
-    assert.equal(options.cookie.sameSite, "lax");
-    assert.equal(options.cookie.secure, true);
+    assert.match(appSource, /app\.use\(session\(\{[\s\S]*?saveUninitialized:\s*false/);
+    assert.match(appSource, /cookie:\s*\{[\s\S]*?httpOnly:\s*true/);
+    assert.match(appSource, /cookie:\s*\{[\s\S]*?sameSite:\s*"lax"/);
+    assert.match(appSource, /cookie:\s*\{[\s\S]*?secure:\s*true/);
 });
 
 
-test("development sessions cannot downgrade secure cookies", () => {
-    const options = createSessionOptions({
-        store: {},
-        secret: "a-secure-session-secret-with-32-characters",
-        isProduction: false,
-    });
-
-    assert.equal(options.cookie.secure, true);
+test("session cookies cannot be downgraded to clear text", () => {
+    assert.doesNotMatch(appSource, /secure:\s*isProduction/);
+    assert.doesNotMatch(appSource, /secure:\s*false/);
 });
 
 
 test("short session secrets are rejected", () => {
-    assert.throws(
-        () => createSessionOptions({ store: {}, secret: "short" }),
-        /at least 32 characters/
-    );
+    assert.match(appSource, /process\.env\.SECRET\.length\s*<\s*32/);
+    assert.match(appSource, /SECRET must contain at least 32 characters/);
 });

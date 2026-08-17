@@ -14,14 +14,11 @@ const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const lusca = require("lusca");
 const User = require("./models/user.js");
-const { createSessionOptions } = require("./config/session.js");
 const { createSecurityHeaders } = require("./config/security.js");
 const { isPublicWriteAccessEnabled } = require("./config/publicDemo.js");
-const {
-    csrfSynchronisedProtection,
-    exposeCsrfToken,
-} = require("./config/csrf.js");
+const { parseAuthenticatedListingUpload } = require("./config/upload.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -59,6 +56,9 @@ if (publicWriteAccessEnabled) {
     if (!process.env.SECRET) {
         throw new Error("SECRET is required when PUBLIC_WRITE_ACCESS=true");
     }
+    if (process.env.SECRET.length < 32) {
+        throw new Error("SECRET must contain at least 32 characters");
+    }
 
     const store = MongoStore.create({
         mongoUrl: dbUrl,
@@ -72,12 +72,19 @@ if (publicWriteAccessEnabled) {
         console.log("ERROR in MONGO SESSION STORE", err);
     });
 
-    const sessionOptions = createSessionOptions({
+    app.use(session({
         store,
         secret: process.env.SECRET,
-    });
-
-    app.use(session(sessionOptions));
+        name: "wanderlust.sid",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: "lax",
+            secure: true,
+        },
+    }));
     app.use(flash());
 
     app.use(passport.initialize());
@@ -86,8 +93,6 @@ if (publicWriteAccessEnabled) {
 
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
-
-    app.use(exposeCsrfToken);
 }
 
 
@@ -101,7 +106,8 @@ app.use((req, res, next) => {
 });
 
 if (publicWriteAccessEnabled) {
-    app.use(csrfSynchronisedProtection);
+    app.use("/listings", parseAuthenticatedListingUpload);
+    app.use(lusca.csrf());
 }
 
 // Define the home route to redirect to listings
@@ -134,7 +140,8 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    let { statusCode = 500, message = "Something went wrong!" } = err;
+    const responseStatus = res.statusCode >= 400 ? res.statusCode : 500;
+    let { statusCode = responseStatus, message = "Something went wrong!" } = err;
     if (statusCode >= 500 && isProduction) {
         message = "Something went wrong!";
     }
