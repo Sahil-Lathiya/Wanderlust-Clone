@@ -19,6 +19,7 @@ const User = require("./models/user.js");
 const { createSecurityHeaders } = require("./config/security.js");
 const { isPublicWriteAccessEnabled } = require("./config/publicDemo.js");
 const { parseAuthenticatedListingUpload } = require("./config/upload.js");
+const { createUploadLimiter } = require("./config/rateLimit.js");
 
 
 const listingRouter = require("./routes/listing.js");
@@ -106,7 +107,7 @@ app.use((req, res, next) => {
 });
 
 if (publicWriteAccessEnabled) {
-    app.use("/listings", parseAuthenticatedListingUpload);
+    app.use("/listings", createUploadLimiter(), parseAuthenticatedListingUpload);
     app.use(lusca.csrf());
 }
 

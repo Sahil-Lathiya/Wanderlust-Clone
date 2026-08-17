@@ -6,8 +6,10 @@ const path = require("node:path");
 const {
     AUTH_LIMIT_DEFAULTS,
     LISTING_READ_LIMIT_DEFAULTS,
+    UPLOAD_LIMIT_DEFAULTS,
     createAuthLimiter,
     createListingReadLimiter,
+    createUploadLimiter,
 } = require("../config/rateLimit.js");
 const { createSecurityHeaders } = require("../config/security.js");
 
@@ -55,6 +57,24 @@ test("listing read limiter uses bounded modern defaults", () => {
     assert.equal(LISTING_READ_LIMIT_DEFAULTS.standardHeaders, "draft-8");
     assert.equal(LISTING_READ_LIMIT_DEFAULTS.legacyHeaders, false);
     assert.equal(typeof createListingReadLimiter(), "function");
+});
+
+
+test("multipart uploads use a dedicated bounded limiter", () => {
+    assert.equal(UPLOAD_LIMIT_DEFAULTS.windowMs, 15 * 60 * 1000);
+    assert.equal(UPLOAD_LIMIT_DEFAULTS.limit, 20);
+    assert.equal(UPLOAD_LIMIT_DEFAULTS.standardHeaders, "draft-8");
+    assert.equal(UPLOAD_LIMIT_DEFAULTS.legacyHeaders, false);
+    assert.equal(typeof createUploadLimiter(), "function");
+
+    const appSource = fs.readFileSync(
+        path.join(__dirname, "..", "app.js"),
+        "utf8"
+    );
+    assert.match(
+        appSource,
+        /app\.use\("\/listings",\s*createUploadLimiter\(\),\s*parseAuthenticatedListingUpload\)/
+    );
 });
 
 

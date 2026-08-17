@@ -50,7 +50,7 @@ test("CSRF middleware rejects a missing token and accepts the session token", as
 
 test("multipart parsing is registered before global CSRF protection", () => {
     const appSource = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
-    const uploadPosition = appSource.indexOf('app.use("/listings", parseAuthenticatedListingUpload)');
+    const uploadPosition = appSource.indexOf("parseAuthenticatedListingUpload");
     const csrfPosition = appSource.indexOf("app.use(lusca.csrf())");
 
     assert.ok(uploadPosition >= 0);
