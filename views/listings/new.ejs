@@ -9,6 +9,7 @@
                 <br>
                 <form method="POST" action="/listings" novalidate class="needs-validation"
                     enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf" value="<%= _csrf %>">
                     <div class="mb-3">
                         <label for="title" class="form-label mb-0">Title</label>
                         <input name="listing[title]" placeholder="Add a catchy title" type="text" class="form-control"
@@ -29,8 +30,8 @@
 
                     <div class="row">
                         <div class="mb-3 col-md-4">
-                            <label for="price" class="form-label mb-0">Price</label>
-                            <input name="listing[price]" placeholder="1600" class="form-control" required>
+                            <label for="price" class="form-label mb-0">Nightly price (GBP)</label>
+                            <input name="listing[price]" placeholder="180" class="form-control" required>
                             <div class="invalid-feedback"> Price should be valid!</div>
                         </div>
 

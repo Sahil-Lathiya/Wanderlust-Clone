@@ -5,6 +5,9 @@ body {
     min-height: 100vh;
 }
 
+.demo-notice { background: #17202a; color: #fff; font-size: 0.9rem; padding: 0.65rem 1rem; text-align: center; }
+.demo-notice strong { margin-right: 0.25rem; }
+
 .container {
     flex: 1;
 }
@@ -13,6 +16,13 @@ body {
     height: 5rem;
     background-color: white;
 }
+
+.navbar-brand { align-items: center; display: flex; gap: 0.6rem; }
+.brand-name { color: #222; font-size: 1rem; font-weight: 700; }
+.read-only-label { background: #f1f3f5; border-radius: 999px; color: #495057; font-size: 0.8rem; font-weight: 700; padding: 0.4rem 0.75rem; }
+.search-btn { background-color: #f2424d !important; border-color: #f2424d !important; border-radius: 25px !important; color: #fff !important; padding: 0 1rem !important; }
+.search-btn i { display: inline; margin-right: 0.5rem; }
+.search-inp { border-radius: 25px !important; font-size: 1rem !important; padding: 0.5rem 3rem !important; text-align: center; }
 
 /* App symbol */
 .fa-compass {
@@ -29,6 +39,8 @@ body {
     text-decoration: none;
     color: #222222;
 }
+
+.f-info-links { gap: 1rem; }
 
 .f-info-links a:hover {
     text-decoration: underline;
@@ -58,10 +70,48 @@ body {
     align-items: space-evenly;
 }
 
+.trust-page { margin: 4rem auto; max-width: 760px; }
+.trust-page h1 { font-weight: 750; margin-bottom: 1.25rem; }
+.trust-page h2 { font-size: 1.25rem; margin-top: 2rem; }
+.trust-page p, .trust-page li { line-height: 1.7; }
+.eyebrow { color: #b4232d; font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.trust-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+.listings-intro { align-items: flex-end; display: flex; gap: 2rem; justify-content: space-between; margin: 3.5rem 0 1.5rem; }
+.listings-intro h1, .listing-detail-header h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 780; letter-spacing: -0.04em; margin-bottom: 0.75rem; }
+.listings-intro p { color: #5f6670; line-height: 1.7; margin: 0; max-width: 720px; }
+.demo-pill { background: #f4f0ff; border: 1px solid #ddd1ff; border-radius: 999px; color: #5b3fa3; display: inline-flex; font-size: 0.82rem; font-weight: 750; padding: 0.45rem 0.8rem; white-space: nowrap; }
+.search-summary { color: #5f6670; margin: 1.5rem 0 0; }
+.empty-state { background: #f7f8fa; border-radius: 1.25rem; margin: 2rem 0 5rem; padding: 3rem; text-align: center; }
+.empty-state p { color: #5f6670; }
+.listing-detail-header { margin: 3rem auto 1.5rem; max-width: 980px; }
+.listing-detail-header > p:last-child { color: #5f6670; }
+.back-link { color: #343a40; display: inline-block; font-weight: 650; margin-bottom: 2rem; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+.listing-detail-card { background: #fff; border: 1px solid #e7e9ed; border-radius: 1.5rem; box-shadow: 0 20px 55px rgba(23, 32, 42, 0.08); margin: 0 auto 5rem; max-width: 980px; overflow: hidden; }
+.listing-detail-body { padding: clamp(1.5rem, 4vw, 3rem); }
+.listing-description { color: #4d5660; font-size: 1.05rem; line-height: 1.8; margin: 1.5rem 0; max-width: 760px; }
+.listing-detail-price { font-size: 1.45rem !important; }
+.demo-explainer { border-left: 3px solid #7257b5; color: #5f6670; margin: 2rem 0 0; padding-left: 1rem; }
+.reviews-section { margin: 0 auto 4rem; max-width: 980px; }
+
+@media (max-width: 767px) {
+    .navbar { height: auto; min-height: 5rem; }
+    .search-inp { padding: 0.5rem 1rem !important; }
+    .f-info { height: auto; padding: 1.25rem 0; }
+    .listings-intro { align-items: flex-start; flex-direction: column; margin-top: 2rem; }
+}
+
 /* Cards */
 .listing-card {
     border: none !important;
     margin-bottom: 2rem;
+    transition: transform 180ms ease;
+}
+
+.listing-card:hover { transform: translateY(-4px); }
+
+.listing-card-image {
+    height: 20rem;
 }
 
 .card-img-top {
@@ -73,6 +123,12 @@ body {
 .card-body {
     padding: 0 !important;
 }
+
+.listing-card-body { padding-top: 1rem !important; }
+.listing-card-body h2 { color: #1f252b; font-size: 1.02rem; font-weight: 750; line-height: 1.35; margin-bottom: 0.4rem; }
+.listing-location { color: #6d747c; font-size: 0.9rem; margin-bottom: 0.55rem; }
+.listing-price { color: #1f252b; font-size: 1rem; font-weight: 750; margin: 0; }
+.listing-price span { color: #6d747c; font-size: 0.88rem; font-weight: 500; }
 
 .card-text p {
     font-weight: 400 !important;
@@ -101,16 +157,19 @@ body {
 
 /* Show Page */
 .show-img {
-    height: 30vh;
+    height: min(58vh, 620px);
+    object-fit: cover;
+    width: 100%;
 }
 
 .btns {
     display: flex;
+    gap: 0.75rem;
+    margin: 0 auto 2rem;
+    max-width: 980px;
 }
 
 .show-card {
     padding-left: 0;
     padding-right: 0;
 }
-
-

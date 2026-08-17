@@ -1,84 +1,72 @@
-# Wanderlust Clone
+# Wanderlust Property Listings Demo
 
-## Project Overview
-Wanderlust Clone is a web application designed for users to explore and create travel listings, read and write reviews, and manage user authentication through a seamless interface.
+An Express and MongoDB learning project for property listings and reviews. It demonstrates server-rendered CRUD flows, authentication, ownership checks, image uploads and responsive EJS templates.
 
-## Tech Stack
-- **Node.js**: The application server is built using Node.js, providing a scalable network application.
-- **Express**: We utilize Express.js to simplify routing and middleware management.
-- **MongoDB**: The data is stored in a MongoDB database to ensure a flexible schema design, allowing for easy data manipulation.
-- **EJS**: Embedded JavaScript templating is used for rendering dynamic web pages.
-- **Passport.js**: For user authentication, Passport.js offers a simple and reliable way to manage user sessions.
+> Portfolio code sample, not a booking service. The hosted version is read-only, listings are demonstration data, payments and reservations are not implemented, and the environment may sleep when inactive.
 
-## Features
-- **Listings**: Users can view and create travel listings.
-- **Reviews**: Users are able to write reviews on listings they've visited.
-- **User Authentication**: Registration and login functionality to ensure a personalized experience for users.
+[View the live read-only demo](https://sahil-wanderlust-portfolio.onrender.com/listings)
 
-## Deployment
-The application is deployed on **Render**, enabling high availability and ease of access for users.
+## Implemented
 
-## Project Structure
+- register, log in and log out with Passport.js;
+- create, view, edit and delete owned listings;
+- add and delete owned reviews;
+- search by listing title, location or country;
+- upload listing images through Cloudinary;
+- validate listing and review payloads with Joi;
+- store sessions in MongoDB;
+- protect state-changing forms with session-bound CSRF tokens;
+- apply secure cookie settings and common HTTP security headers.
+
+## Security boundaries
+
+- create, update and delete routes require authentication;
+- listing changes require server-side owner checks;
+- review deletion requires a server-side author check;
+- edit and delete controls are hidden from other users in the rendered UI;
+- production cookies use `HttpOnly`, `SameSite=Lax` and `Secure`;
+- authenticated forms require a valid synchronizer CSRF token;
+- the session secret must contain at least 32 characters.
+
+This learning project has not had an independent security audit and does not process payments or sensitive booking data.
+
+Write access is disabled unless `PUBLIC_WRITE_ACCESS=true` is set explicitly. The public read-only runtime does not initialise MongoDB, sessions or Passport authentication. To exercise authenticated CRUD flows, use an isolated local development database and the values documented in `.env.example`.
+
+The public deployment uses a deterministic six-record sample catalogue, so user-created database content is never exposed through the portfolio website. Local development can continue to use MongoDB-backed CRUD flows after explicitly enabling write access.
+
+## Local setup
+
+```bash
+cp .env.example .env
+npm ci
+npm start
 ```
-Wanderlust-Clone/
-├── models/
-│   ├── User.js
-│   ├── Listing.js
-│   ├── Review.js
-├── routes/
-│   ├── api/
-│   │   ├── listings.js
-│   │   ├── reviews.js
-│   │   ├── users.js
-│   ├── index.js
-├── views/
-│   ├── listings/  
-│   ├── reviews/
-│   ├── users/
-└── app.js
+
+Required environment values are documented in `.env.example`. Use a development MongoDB database and a separate Cloudinary folder/account.
+Authenticated mode requires HTTPS because session cookies are always marked `Secure`.
+
+## Verify
+
+```bash
+npm run check
 ```
 
-## Database Models
-### User
-- **username**: String
-- **password**: String
-- **email**: String
+The test suite covers read-only runtime isolation, blocked write routes, session-cookie policy, request validation and authorization-sensitive templates.
 
-### Listing
-- **title**: String
-- **description**: String
-- **location**: String
-- **userId**: Ref to User model
+## Main routes
 
-### Review
-- **content**: String
-- **userId**: Ref to User model
-- **listingId**: Ref to Listing model
+| Method | Route | Purpose | Access |
+|---|---|---|---|
+| GET | `/listings` | Browse and search | Public |
+| POST | `/listings` | Create listing | Signed in |
+| PUT/DELETE | `/listings/:id` | Change owned listing | Owner |
+| POST | `/listings/:id/reviews` | Add review | Signed in |
+| DELETE | `/listings/:id/reviews/:reviewId` | Delete review | Author |
 
-## API Routes
-- **GET /api/listings**: Retrieves all listings.
-- **POST /api/listings**: Creates a new listing.
-- **GET /api/reviews**: Retrieves all reviews for a listing.
-- **POST /api/reviews**: Adds a new review.
+## Stack
 
-## Authentication with Passport.js
-- User registration and login is managed via Passport.js, ensuring secure and efficient user sessions.
-- Sessions are stored in the database to maintain state across server requests.
+Node.js, Express, MongoDB, Mongoose, EJS, Passport.js, Joi, Cloudinary and Bootstrap.
 
-## Cloudinary Integration
-Images for listings are uploaded and managed using Cloudinary to provide robust media hosting and transformation abilities.
+## Licence
 
-## Environment Variables Setup
-Ensure to set the following environment variables:
-- `MONGODB_URI`
-- `SESSION_SECRET`
-- `CLOUDINARY_URL`
-
-## Installation and Usage
-1. Clone the repository: `git clone https://github.com/Sahil-Lathiya/Wanderlust-Clone`
-2. Navigate to the project folder: `cd Wanderlust-Clone`
-3. Install dependencies: `npm install`
-4. Set up your environment variables in a `.env` file.
-5. Run the application: `npm start`
-
-Visit `http://localhost:3000` to view the application in your browser.
+[ISC](LICENSE)

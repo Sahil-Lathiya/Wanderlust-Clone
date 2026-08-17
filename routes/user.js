@@ -1,26 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user.js");
 const passport = require("passport");
-const wrapAsync = require("../utils/wrapAsync.js");
-const { saveRedirectUrl } = require("../middleware.js");
+const { isPublicWriteEnabled, saveRedirectUrl } = require("../middleware.js");
 const userController = require("../controllers/users.js");
+const { createAuthLimiter } = require("../config/rateLimit.js");
 
-
+const authLimiter = createAuthLimiter();
 
 router
     .route("/signup")
     .get(
+        isPublicWriteEnabled,
         userController.renderSignupForm)
     .post(
-        wrapAsync(userController.signup));
+        isPublicWriteEnabled,
+        authLimiter,
+        userController.signup);
 
 
 router
     .route("/login")
     .get(
+        isPublicWriteEnabled,
         userController.renderLoginForm)
     .post(
+        isPublicWriteEnabled,
+        authLimiter,
         saveRedirectUrl,
         passport.authenticate('local',
             {
@@ -31,7 +36,6 @@ router
     );
 
 
-// TO DO: implement logout functionality
-router.get("/logout", userController.logout);
+router.post("/logout", isPublicWriteEnabled, userController.logout);
 
 module.exports = router;

@@ -4,6 +4,7 @@
         <h1 class="col-6 offset-3 mt-3 mb-1">Login</h1>
         <div class="col-8 offset-3">
             <form method="POST" action="/login" class="needs-validation" novalidate>
+                <input type="hidden" name="_csrf" value="<%= _csrf %>">
                 <div class="mb-3 mt-3">
                     <label for="username" class="form-label mb-0">username</label>
                     <input name="username" id="username" type="text" class="form-control" required>

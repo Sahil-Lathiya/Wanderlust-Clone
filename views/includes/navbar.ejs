@@ -1,33 +1,9 @@
-<style>
-    .search-btn {
-        background-color: #f2424d;
-        color: #fff;
-        border-radius: 25px;
-        padding: 0 1rem 0 1rem;
-    }
-
-    .search-btn:hover {
-        background-color: #f2424d;
-        color: #fff;
-    }
-
-    .search-btn i {
-        display: inline;
-        margin-right: 0.5rem;
-    }
-
-    .search-inp {
-        border-radius: 25px;
-        padding: 0.5rem 3rem 0.5rem 3rem;
-        font-size: 1rem;
-        text-align: center;
-    }
-</style>
-
-
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+        <a class="navbar-brand" href="/listings" aria-label="Wanderlust property demo home">
+            <i class="fa-regular fa-compass"></i>
+            <span class="brand-name">Wanderlust Demo</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
 
             <span class="navbar-toggler-icon"></span>
@@ -38,21 +14,29 @@
 
             </div>
             <div class="navbar-nav ms-auto">
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations">
+                <form class="d-flex" role="search" method="GET" action="/listings">
+                    <input class="form-control me-2 search-inp" type="search" name="q" value="<%= typeof query !== 'undefined' ? query : '' %>" placeholder="Search destinations" aria-label="Search listings">
                     <button class="btn search-btn" type="submit"><i
                             class="fa-solid fa-magnifying-glass"></i>Search</button>
                 </form>
             </div>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/listings/new">Airbnb your home</a>
-                <% if (!currUser) { %>
-                    <a class="nav-link" href="/signup"><b>SignUp</b></a>
+                <% if (publicWriteAccessEnabled) { %>
+                    <a class="nav-link" href="/listings/new">Add a demo listing</a>
+                <% } %>
+                <% if (publicWriteAccessEnabled && !currUser) { %>
+                    <a class="nav-link" href="/signup"><b>Sign up</b></a>
                     <a class="nav-link" href="/login"><b>Log in</b></a>
                     <% } %>
-                        <% if (currUser) { %>
-                            <a class="nav-link" href="/logout"><b>Log out</b></a>
+                        <% if (publicWriteAccessEnabled && currUser) { %>
+                            <form method="POST" action="/logout">
+                                <input type="hidden" name="_csrf" value="<%= _csrf %>">
+                                <button class="nav-link btn btn-link" type="submit"><b>Log out</b></button>
+                            </form>
                             <% } %>
+                <% if (!publicWriteAccessEnabled) { %>
+                    <span class="navbar-text read-only-label">Read-only demo</span>
+                <% } %>
             </div>
         </div>
     </div>
